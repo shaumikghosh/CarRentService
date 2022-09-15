@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = $"User - {@ViewBag.FullName}";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+@if (TempData["UserApproved"] != null) {
+    <div class="alert alert-light" role="alert">
+        @TempData["UserApproved"]
+    </div>
+}
+@if (TempData["DrivingLisenceRejected"] != null) {
+    <div class="alert alert-light" role="alert">
+        @TempData["DrivingLisenceRejected"]
+    </div>
+}
+@if (TempData["BankApproved"] != null) {
+    <div class="alert alert-light" role="alert">
+        @TempData["BankApproved"]
+    </div>
+}
+@if (TempData["BankRejected"] != null) {
+    <div class="alert alert-light" role="alert">
+        @TempData["BankRejected"]
+    </div>
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="m-0 text-dark">View User</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">View User</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<style>
+    table tbody tr th{
+        border:1px dashed black;
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <table class="table border">
+            <tbody>
+                <tr>
+                    <th scope="row" width=250>Id</th>
+                    <td>@ViewBag.Id</td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Full Name</th>
+                    <td>@ViewBag.FullName</td>
+                </tr>
+                <tr>
+                    <th scope="row" width="200">Email</th>
+                    <td>@ViewBag.Email</td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Account Deleted</th>
+                    <td>
+                        @if (ViewBag.Deleted == true) {
+                            <i class="btn btn-danger btn-sm">Yes</i>
+                        } else {
+                            <i class="btn btn-success btn-sm">No</i>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Email Confirmed</th>
+                    <td>
+                        @if (ViewBag.EmailConfirmed == true) {
+                            <i class="btn btn-success btn-sm">Yes</i>
+                        } else {
+                            <i class="btn btn-danger btn-sm">No</i>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">User Role</th>
+                    <td>
+                        @foreach (var role in ViewBag.Role) {
+                            @role.ApplicationRole.Name
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">User Aditional Email</th>
+                    <td>@if (ViewBag.AdiEmail == "") {@("---")} else { @ViewBag.AdiEmail}</td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Phone Number</th>
+                    <td>@if (ViewBag.CountryCode == "") {@("")} else { @ViewBag.CountryCode}@if (ViewBag.Phone == "") {@("---")} else { @ViewBag.Phone}</td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Submitted Driving Lisence</th>
+                    <td>
+                        @if (ViewBag.DrivingLisence > 0) {
+                            <i class="btn btn-success btn-sm">Yes</i>
+                        } else {
+                            <i class="btn btn-danger btn-sm">No</i>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Bank Document Submitted</th>
+                    <td>
+                        @if (ViewBag.BankName == null) {
+                            <i class="btn btn-danger btn-sm">No</i>
+                        } else {
+                            <i class="btn btn-success btn-sm">Yes</i>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="250">Account Verified</th>
+                    <td>
+                        @if (ViewBag.DrivingApprove == false || ViewBag.BankApprove == false) {
+                            <i class="btn btn-danger btn-sm">No</i>
+                        } else {
+                            <i class="btn btn-success btn-sm">Yes</i>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="200">Location/Address</th>
+                    <td>
+                        <table>
+                            <tr>
+                                <th scope="row">Street Address</th>
+                                <td>@if (ViewBag.Street == "") {@("---")} else { @ViewBag.Street}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Zip Code</th>
+                                <td>@if (ViewBag.Zip == "") {@("---")} else { @ViewBag.Zip}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">House Number</th>
+                                <td>@if (ViewBag.HouseNumber == "") {@("---")} else { @ViewBag.HouseNumber}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">State</th>
+                                <td>@if (ViewBag.State == "") {@("---")} else { @ViewBag.State}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">City</th>
+                                <td>@if (ViewBag.City == "") {@("---")} else { @ViewBag.City}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Country</th>
+                                <td>@if (ViewBag.Country == "") {@("---")} else { @ViewBag.Country}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="200">User Image</th>
+                    <td>
+                        @if (ViewBag.ProfileImage != null) {
+
+                            <img src="~/profile/img/profile/@ViewBag.ProfileImage" width="500"
+                                 height="500" />} else {
+                            <img src="~/clientside/images/demo-user.png" width="500"
+                                 height="500" />
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" width="200"></th>
+                    <td>
+
+                        @if (ViewBag.DrivingLisence > 0) {
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target=".DrivingLicense">Review Driving License</button>
+                        }
+
+
+                        @if (ViewBag.BankName != null) {
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target=".BankDetails">Review Bank Details</button>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Driving License-->
+    <div class="modal fade bd-example-modal-lg DrivingLicense" tabindex="-1" role="dialog" aria-labelledby="DrivingLicense" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content p-5">
+                <h3 class="text-primary">Driving Licsence</h3>
+                <br />
+                @foreach (var image in ViewBag.LisenceImages) {
+                    <img src="~/profile/img/documents/@image.Image" alt="" />
+                    <br />
+                }
+                <div class="modal-footer justify-content-between">
+                    @if (ViewBag.DrivingApprove == false) {
+                        <a asp-controller="User" asp-action="ApproveDrivingLisence" asp-route-id="@ViewBag.Id" asp-area="Admin" class="btn btn-success btn-sm text-white">Approve</a>
+                        <a asp-controller="User" asp-action="RejectDrivingLisence" asp-route-id="@ViewBag.Id" asp-area="Admin" class="btn btn-danger btn-sm text-white">Reject</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Driving License-->
+    <div class="modal fade bd-example-modal-md BankDetails" tabindex="-1" role="dialog" aria-labelledby="DrivingLicense" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content p-5">
+                <h3 class="text-primary">Bank Info</h3>
+                <table class="m-5">
+                    <thead>
+                        <tr>
+                            <th scope="row" width="200">Bank Name</th>
+                            <td>@ViewBag.BankName</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" width="200">Account Number</th>
+                            <td>@ViewBag.BankAccount</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" width="200">Swift Code</th>
+                            <td>@ViewBag.SwiftCode</td>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="modal-footer justify-content-between">
+                    @if (ViewBag.BankApprove == false) {
+                        <a asp-controller="User" asp-action="ApproveBank" asp-area="Admin" asp-route-id="@ViewBag.Id" class="btn btn-success btn-sm text-white">Approve</a>
+                        <a asp-controller="User" asp-action="RejectBank" asp-area="Admin" asp-route-id="@ViewBag.Id" class="btn btn-danger btn-sm text-white">Reject</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

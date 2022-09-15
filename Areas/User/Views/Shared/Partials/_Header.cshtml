@@ -1,0 +1,142 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Microsoft.EntityFrameworkCore;
+@inject UserManager<ApplicationUser> UserManager;
+@{ 
+    var user = await UserManager.GetUserAsync(User);
+    var info =  await UserManager.Users.Where(x => x.Id == user.Id).Include(x => x.UserAdditionalInfo).FirstOrDefaultAsync();
+}
+<div class="container-fluid no-gutters">
+    <div class="row">
+        <div class="col-lg-12 p-0 ">
+            <div class="header_iner d-flex justify-content-between align-items-center">
+                <div class="sidebar_icon d-lg-none">
+                    <i class="ti-menu"></i>
+                </div>
+                <div class="serach_field-area d-flex align-items-center">
+                    <div class="search_inner">
+                        <form action="#">
+                            <div class="search_field">
+                                <input type="text" placeholder="Search here...">
+                            </div>
+                            <button type="submit"> <img src="~/profile/img/icon/icon_search.svg" alt=""> </button>
+                        </form>
+                    </div>
+                    <span class="f_s_14 f_w_400 ml_25 white_text text_white">Apps</span>
+                </div>
+                <div class="header_right d-flex justify-content-between align-items-center">
+                    <div class="header_notification_warp d-flex align-items-center">
+                        <li>
+                            <a id="notice" class="bell_notification_clicker" style="cursor:pointer">
+                                <img src="~/profile/img/icon/bell.svg" alt="">
+                            </a>
+                            <!-- Menu_NOtification_Wrap  -->
+                            <div class="Menu_NOtification_Wrap">
+                                <div class="notification_Header">
+                                    <h4>Notifications</h4>
+                                </div>
+                                <div class="Notification_body">
+                                </div>
+                                <div class="notification_Footer">
+                                    <button class="btn btn-sm btn-block" id="clr">Clear</button>
+                                </div>
+                            </div>
+                            <!--/ Menu_NOtification_Wrap  -->
+                        </li>
+                    </div>
+                    <div class="profile_info">
+                        @if (info.UserAdditionalInfo.ProfileImage != null) {
+                            <img src="~/profile/img/profile/@(info.UserAdditionalInfo.ProfileImage)" alt="#">
+                        } else {
+                                <img src="~/clientside/images/demo-user.png" alt="#">
+                        }
+                        
+                        <div class="profile_info_iner">
+                            <div class="profile_author_name">
+                                <p>User</p>
+                                <h5>@user.FullName()</h5>
+                            </div>
+                            <div class="profile_info_details">
+                                @*<a href="#">My Profile </a>*@
+                                <a asp-action="UserSettings" asp-controller="Settings">Settings</a>
+                                <a asp-controller="Logout" asp-action="Logout">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        function nf_icon() {
+            $.ajax({
+                url: "/user/user-notification-seen",
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.result > 0) {
+                        $("#notice").attr("class", "bell_notification_clicker nav-link-notify");
+                    } else {
+                        $("#notice").attr("class", "bell_notification_clicker");
+                    }
+                }
+            });
+        }
+        nf_icon();
+        setInterval(function () {
+            nf_icon();
+        }, 1000);
+
+
+        function notific() {
+            $.ajax({
+                url: "/user/user-notification",
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    $(".Notification_body").html("");
+                    res.forEach(data => {
+                        var date = new Date(data.createtAt);
+                        $(".Notification_body").append(`
+                            <div class="single_notify d-flex align-items-center">
+                                <div class="notify_content">
+                                    <span class="text-primary">Date: ${date.getMonth()}-${date.getDate()}-${date.getFullYear()} | Time: ${date.getHours()}:${date.getMinutes()}</span>
+                                    <p id="notstatus" status='${data.approved}' class='text-dark'>${data.message}</p>
+                                </div>
+                            </div>
+                        `);
+                    });
+                }
+            });
+        }
+        notific();
+        setInterval(function () {
+            notific();
+        }, 1000);
+
+        $("#notice").click(function () {
+            $.ajax({
+                url: "/user/user-mark-notf-read",
+                type: 'get',
+                success: function (res) {
+
+                }
+            });
+        });
+
+        $("#clr").click(function () {
+            $.ajax({
+                url: "/user/user-notf-delete",
+                type: 'get',
+                success: function (res) {
+
+                }
+            });
+        })
+    });
+</script>

@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a asp-action="Dashboard" asp-controller="Dashboard" asp-area="Admin" class="brand-link">
+        <span class="brand-text font-weight-light ml-2"> @if (user.FirstName == null && user.LastName == null)
+        {@("Name Surname")}
+        else {@($"{user.FirstName} {user.LastName}")}</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+                <li class="nav-item has-treeview menu-open">
+                    <a asp-area="Admin" asp-action="Dashboard" asp-controller="Dashboard" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Manage User
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-action="AllUsers" asp-controller="User" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All users</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-action="CreateUser" asp-controller="User" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Create user</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Settings
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-action="ChangePassword" asp-controller="Settings" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Change Password</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-action="ProfileSettings" asp-controller="Settings" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Profile Details</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

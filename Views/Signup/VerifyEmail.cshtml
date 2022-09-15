@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "Verify Email";
+    Layout = "~/Views/Shared/_WebLayout.cshtml";
+}
+
+<section id="about">
+    <div class="container">
+        @if (TempData["EmailVerified"] != null)
+        {
+            <h1 class="text-success text-center"><i class="far fa-check-circle"></i> @TempData["EmailVerified"]</h1>
+            <h4 class="text-info text-center d-block">Going back in <span id="result">5</span> seconds</h4>
+        }
+        @if (TempData["TokenError"] != null)
+        {
+            <h1 class="text-danger text-center"><i class="fas fa-skull-crossbones"></i> @TempData["TokenError"]</h1>
+            <h4 class="text-danger text-center d-block">Going back in <span id="result">5</span> seconds</h4>
+        }
+        @if (TempData["TokenExpired"] != null)
+        {
+            <h1 class="text-danger text-center"><i class="fas fa-skull-crossbones"></i> @TempData["TokenExpired"]</h1>
+            <h4 class="text-danger text-center d-block">Going back in <span id="result">5</span> seconds</h4>
+        }
+    </div>
+</section><!-- #about -->
+
+<script>
+    setTimeout(function () {
+        window.location = "/user/profile";
+    }, 5000);
+</script>

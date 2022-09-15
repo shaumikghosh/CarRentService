@@ -1,0 +1,109 @@
+﻿@model CreateUser;
+
+@{
+    ViewData["Title"] = "Create User";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+@if (TempData["UserCreated201"] != null)
+{
+    <div class="alert alert-light" role="alert">
+        @TempData["UserCreated201"]
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="m-0 text-dark">Create User</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Create User</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary" style="width:600px;margin:auto">
+            <div class="card-header">
+                @if (TempData["Email"] != null)
+                {
+                    <h3>Created user info:-</h3>
+                    <table>
+                        <tr>
+                            <td>Email &nbsp;&nbsp;=&nbsp;&nbsp; </td>
+                            <td>@TempData["Email"]</td>
+                        </tr>
+                        <tr>
+                            <td>Password &nbsp;&nbsp;=&nbsp;&nbsp; </td>
+                            <td>@TempData["Password"]</td>
+                        </tr>
+                        <tr>
+                            <td>Role &nbsp;&nbsp;=&nbsp;&nbsp; </td>
+                            <td>@TempData["Role"]</td>
+                        </tr>
+                    </table>
+                }
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            @using (Html.BeginForm("CreateUser", "User", new { area = "Admin" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model=>model.Email)
+                        @Html.TextBoxFor(model=>model.Email, new { @class="form-control"})
+                        @Html.ValidationMessageFor(model=>model.Email, null, new { @class="text-danger"})
+                        @if (TempData["EmailExist"] != null)
+                        {
+                            <span class="text-danger">@TempData["EmailExist"]</span>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password)
+                        @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @id="password", @readonly = true })
+                        @Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger"})
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserRole)
+                        @Html.DropDownListFor(model=>model.UserRole, new SelectList(ViewBag.Roles), "--Select Role --", new { @class="form-control"})
+                        @Html.ValidationMessageFor(model=>model.UserRole, null, new{ @class="text-danger"})
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-warning float-right" onclick="geberatePasswordString()">Generate Random Password</button>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    function geberatePasswordString() {
+        let password = document.querySelector("#password");
+        let r = Math.random().toString(10).substring(7);
+        password.value = "";
+        password.value = generateString(10);
+
+    }
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    function generateString(length) {
+        let result = ' ';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+    }
+</script>

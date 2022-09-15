@@ -1,0 +1,117 @@
+﻿@model SearchUser;
+@{
+    ViewData["Title"] = "Search User";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="m-0 text-dark">Search User</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Search User</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<div style="margin:auto;width:600px">
+    @using (Html.BeginForm("SearchUser", "User", new { area = "Admin" }, FormMethod.Get))
+    {
+    <div class="row">
+        <div class="form-group col-auto">
+            <a class="tn btn-info btn-sm" href="@Url.Action("AllUsers", "User", new { area="Admin"})">
+                <i class="fa fa-users"></i> All Users
+            </a>
+        </div>
+        <div class="form-group col-8">
+            @Html.TextBoxFor(model => model.data, new { @placeholder = "Seach for user here ...", @class = "form-control form-control-sm" })
+        </div>
+        <div class="form-group col-auto">
+            <button type="submit" class="btn btn-warning btn-sm">Search <i class="fa fa-search"></i></button>
+        </div>
+    </div>
+    }
+</div>
+
+<div class="row" style="margin-top:30px">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Super Admin List</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>FIRST NAME</th>
+                            <th>LAST NAME</th>
+                            <th>E-Mail</th>
+                            <th>STATUS</th>
+                            <th>USER TYPE</th>
+                            <th>CREATED AT</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.SearchResult.Count<1)
+                        {
+
+
+                            <tr>
+                                <td style="color:red;">No record found!</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var user in ViewBag.SearchResult)
+                            {
+                                <tr>
+                                    <td>
+                                        @(user.FirstName != null ? user.FirstName:"Name")
+                                    </td>
+                                    <td>
+                                        @(user.LastName != null ? user.LastName:"Surname")
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @if (user.AccessFailedCount != 1)
+                                        {
+                                            <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Active</span>
+                                        }
+                                        else
+                                        { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">Dectivated</span>}
+                                    </td>
+                                    <td>
+                                        @foreach(var role in user.ApplicationUserRole)
+                                        {
+                                            <mark>@role.ApplicationRole</mark>
+                                        }
+                                    </td>
+                                    <td>@user.CreatedAt</td>
+                                    <td>
+                                        <a asp-action="EditUser" asp-controller="User" asp-area="Admin" asp-route-id="@user.Id" class="btn btn-info btn-sm">
+                                            <i class="fa fa-edit text-white"></i>
+                                        </a>
+                                        <i onclick="deleteAction(this)" class="btn btn-danger btn-sm" delete-data="@user.Id">
+                                            <i class="fa fa-trash text-white"></i>
+                                        </i>
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

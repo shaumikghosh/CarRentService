@@ -1,0 +1,294 @@
+﻿@model SearchUser;
+@{
+    var path = ViewContext.HttpContext.Request.Path;
+    var spadmins = "";
+    var admins = "";
+    var users = "";
+    if (path == "/admin/all-users")
+    {
+        spadmins = " active";
+    }
+    else if (path == "/admin/admins")
+    {
+        admins = " active";
+    }
+    else
+    {
+        users = " active";
+    }
+}
+<div style="margin:auto;width:600px">
+    @using (Html.BeginForm("SearchUser", "User", new { area = "Admin" }, FormMethod.Get))
+    {
+        <div class="row">
+            <div class="form-group col-auto">
+                <a class="tn btn-info btn-sm" href="@Url.Action("AllUsers", "User", new { area="Admin"})">
+                <i class="fa fa-users"></i> All Users</a>
+            </div>
+            <div class="form-group col-8">
+                @Html.TextBoxFor(model => model.data, new { @placeholder = "Seach for user here ...", @class = "form-control form-control-sm"})
+            </div>
+            <div class="form-group col-auto">
+                <button type="submit" class="btn btn-warning btn-sm">Search <i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    }
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                @Html.ActionLink("Super Admins", "AllUsers", "User", null, new { area = "Admin", @class = "nav-link" + spadmins, @aria_controls = "home", @aria_selected = "true", @id = "home-tab" })
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("Admins", "Admins", "User", null, new { area = "Admin", @class = "nav-link" + admins, @aria_controls = "profile", @aria_selected = "true", @id = "home-tab" })
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("Users", "Users", "User", null, new { area = "Admin", @class = "nav-link" + users, @aria_controls = "contact", @aria_selected = "true", @id = "home-tab" })
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                @if (path == "/admin/all-users")
+                {
+                    <div class="row" style="margin-top:30px">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Super Admin List</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0" style="height: 300px;">
+                                    <table class="table table-head-fixed text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>FIRST NAME</th>
+                                                <th>LAST NAME</th>
+                                                <th>E-Mail</th>
+                                                <th>STATUS</th>
+                                                <th>Email Verified</th>
+                                                <th>User Deleted</th>
+                                                <th>CREATED AT</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in ViewBag.SuperAdmins)
+                                            {
+                                            <tr>
+                                                <td>
+                                                    @(user.FirstName != null ? user.FirstName:"Name")
+                                                </td>
+                                                <td>
+                                                    @(user.LastName != null ? user.LastName:"Surname")
+                                                </td>
+                                                <td>@user.Email</td>
+                                                <td>
+                                                    @if (user.LockoutEnabled != true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Active</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">Dectivated</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.EmailConfirmed == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.Deleted == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>@user.CreatedAt</td>
+                                                <td>
+                                                    <a asp-action="EditUser" asp-controller="User" asp-area="Admin" asp-route-id="@user.Id" class="btn btn-info btn-sm">
+                                                        <i class="fa fa-edit text-white"></i>
+                                                    </a>
+                                                    <i onclick="deleteAction(this)" class="btn btn-danger btn-sm" delete-data="@user.Id">
+                                                        <i class="fa fa-trash text-white"></i>
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                }
+                else if (path == "/admin/admins")
+                {
+                    <div class="row" style="margin-top:30px">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Admin List</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0" style="height: 300px;">
+                                    <table class="table table-head-fixed text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>FIRST NAME</th>
+                                                <th>LAST NAME</th>
+                                                <th>E-Mail</th>
+                                                <th>STATUS</th>
+                                                <th>Email Verified</th>
+                                                <th>User Deleted</th>
+                                                <th>CREATED AT</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in ViewBag.Admins)
+                                            {
+                                            <tr>
+                                                <td>
+
+                                                    @(user.FirstName != null ? user.FirstName:"Name")
+                                                </td>
+                                                <td>
+                                                    @(user.LastName != null ? user.LastName:"Surname")
+                                                </td>
+                                                <td>@user.Email</td>
+                                                <td>
+                                                    @if (user.LockoutEnabled != true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px ">Active</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px ">Deactivated</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.EmailConfirmed == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.Deleted == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>@user.CreatedAt</td>
+                                                <td>
+                                                    <a asp-action="EditUser" asp-controller="User" asp-area="Admin" asp-route-id="@user.Id" class="btn btn-info btn-sm">
+                                                        <i class="fa fa-edit text-white"></i>
+                                                    </a>
+                                                    <i onclick="deleteAction(this)" delete-data="@user.Id" class="btn btn-danger btn-sm">
+                                                        <i class="fa fa-trash text-white"></i>
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row" style="margin-top:30px">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">User List</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0" style="height: 300px;">
+                                    <table class="table table-head-fixed text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>FIRST NAME</th>
+                                                <th>LAST NAME</th>
+                                                <th>E-Mail</th>
+                                                <th>STATUS</th>
+                                                <th>Email Verified</th>
+                                                <th>User Deleted</th>
+                                                <th>CREATED AT</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in ViewBag.Users)
+                                            {
+                                            <tr>
+                                                <td>
+                                                    @(user.FirstName != null ? user.FirstName:"Name")
+                                                </td>
+                                                <td>
+                                                    @(user.LastName != null ? user.LastName:"Surname")
+                                                </td>
+                                                <td>@user.Email</td>
+                                                <td>
+                                                    @if (user.LockoutEnabled != true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px ">Active</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px ">Deactivated</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.EmailConfirmed == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>
+                                                    @if (user.Deleted == true) {
+                                                        <span style="background-color: forestgreen; color: white; padding: 0 5px 0 5px; border-radius: 5px; font-size: 13px">Yes</span>
+                                                    } else { <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 13px">No</span>}
+                                                </td>
+                                                <td>@user.CreatedAt</td>
+                                                <td>
+                                                    <a asp-action="SingleUser" asp-controller="User" asp-area="Admin" asp-route-id="@user.Id" class="btn btn-warning btn-sm">
+                                                        <i class="fa fa-eye text-white"></i>
+                                                    </a>
+                                                    <a asp-action="EditUser" asp-controller="User" asp-area="Admin" asp-route-id="@user.Id" class="btn btn-info btn-sm">
+                                                        <i class="fa fa-edit text-white"></i>
+                                                    </a>
+                                                    <i onclick="deleteAction(this)" delete-data="@user.Id" class="btn btn-danger btn-sm">
+                                                        <i class="fa fa-trash text-white"></i>
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true" id="deleteModal">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content" style="padding:10px">
+            <p>Do you want to Delete it ?</p>
+            @Html.ActionLink("Yes delete it", "", "", null, new { @class = "btn btn-danger", @id = "delete-heleper" })
+        </div>
+    </div>
+</div>
+
+<script src="~/serverside/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        window.deleteAction = function (x) {
+            var data = $(x).attr("delete-data");
+            $("#deleteModal").modal();
+
+            clearAction();
+
+            $("#delete-heleper").attr("href", "delete-user/" + data);
+        };
+
+        function clearAction() {
+            $("#delete-heleper").attr("href", "");
+        }
+    })
+</script>

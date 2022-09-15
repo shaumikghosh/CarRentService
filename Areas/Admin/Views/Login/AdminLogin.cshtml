@@ -1,0 +1,26 @@
+﻿@model LoginModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="~/serverside/LoginCss.css"/>
+</head>
+<body>
+    <div class="login">
+        <h1 style="text-transform:uppercase">Admin Login</h1>
+        @using (Html.BeginForm("AdminLogin", "Login", new { to = ViewContext.HttpContext.Request.Query["to"], area="Admin" },FormMethod.Post))
+        {
+            @Html.ValidationSummary(true)
+            @Html.TextBoxFor(model=>model.Email, new { @placeholder= "example@example.com" })
+            @Html.PasswordFor(model=>model.Password, new { @placeholder= "Password" })
+            <button type="submit" class="btn btn-primary btn-block btn-large" style="margin-bottom:30px">Login</button>
+        }
+        @Html.ActionLink("Go Back To Website", "Index", "Home", null, new { style="color:white"})
+    </div>
+</body>
+</html>

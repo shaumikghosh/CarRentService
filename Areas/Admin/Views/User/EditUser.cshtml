@@ -1,0 +1,93 @@
+﻿@model UpdateUser;
+@{
+    ViewData["Title"] = "EditUser";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+@if (TempData["UserUpdate201"] != null)
+{
+    <div class="alert alert-light" role="alert">
+        @TempData["UserUpdate201"]
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="m-0 text-dark">Edit User</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Edit User</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+@if (Model != null)
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-primary" style="width:600px;margin:auto">
+                <div class="card-header">
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                @using (Html.BeginForm("EditUser", "User", new { area = "Admin" }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary();
+                    <div class="card-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FirstName)
+                            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.FirstName, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LastName)
+                            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.LastName, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email)
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserRole)
+                            @Html.DropDownListFor(model => model.UserRole, new SelectList(ViewBag.Roles), Model.UserRole, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.UserRole, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            User Enablity
+                            <div class="form-group">
+                                @Html.RadioButtonFor(model => model.UserEnablity, false)&nbsp;
+                                @("Enabled")
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                @Html.RadioButtonFor(model => model.UserEnablity, true)&nbsp;
+                                @("Disabled")
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer" style="display:flex;justify-content:space-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                        <div>
+                            <a asp-action="EditUserAdditionalInfo" asp-controller="User" asp-route-id="@ViewBag.Id" class="btn btn-dark" asp-area="Admin">Edit Additional Info</a>
+                            <a asp-action="EditUserBankInfo" asp-area="Admin" asp-controller="User" asp-route-id="@ViewBag.Id" class="btn btn-dark">Edit Bank Details</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+else {
+    <h1 style="text-align:center;">The Id you are looking for not found!</h1>
+}
+
+

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "All Users";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+@if (TempData.Any())
+{
+    if (TempData["UserDeleteSuccess"] != null)
+    {
+        <div class="alert alert-light" role="alert">
+            @TempData["UserDeleteSuccess"]
+        </div>
+    }
+    if (TempData["UserDeleteFail"] != null)
+    {
+        <div class="alert alert-light" role="alert">
+            @TempData["UserDeleteFail"]
+        </div>
+    }
+}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h5 class="m-0 text-dark">All Super Admins</h5>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Super Admins</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<partial name="~/Areas/Admin/Views/Shared/Partials/_UserTab.cshtml" />

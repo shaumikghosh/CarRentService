@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewData["Title"] = "AllNotification";
+    Layout = "~/Areas/Admin/Views/Shared/_ServersideLayout.cshtml";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Notifications</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Notifications</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row not">
+
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<script src="~/serverside/plugins/jquery/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        function nf_icon() {
+            $.ajax({
+                url: "/admin/admin-notification",
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.length > 0) {
+                        $(".not").html("");
+                        res.forEach(data => {
+                            var date = new Date(data.createtAt);
+                            $(".not").append(`
+                            <a onclick="View(this)" data-userId='${data.userId}' data-docType='${data.docType}'  target="_blank" class="alert alert-dark col-12 text-white" role="alert" style='cursor:pointer'>
+                              ${data.message} <span">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Date: ${date.getMonth()}-${date.getDate()}-${date.getFullYear()} | Time: ${date.getHours()}:${date.getMinutes()}</span>
+                            </a>
+                        `);
+                        });
+                    } else {
+                        $(".not").html("<p class='text-center'>No notification availabale!</p>");
+                    }
+                    
+                }
+            });
+        }
+        nf_icon();
+        setInterval(function () {
+            nf_icon();
+        }, 1000);
+    });
+    //
+    function View(e) {
+
+        var docType = $(e).attr("data-docType");
+        var userId = $(e).attr("data-userId");
+
+        $.ajax({
+            url: `/admin/admin-mark-notf-read/${userId}/${docType}`,
+            type: 'post',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success == true) {
+                    window.location.href = `/admin/view/user/${userId}`;
+                }
+            }
+        })
+    }
+
+</script>
+<!-- /.navbar -->
